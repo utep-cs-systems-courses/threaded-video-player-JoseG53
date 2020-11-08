@@ -2,29 +2,47 @@
 
 import cv2
 import os
-# globals
-outputDir    = 'frames'
-clipFileName = 'clip.mp4'
-# initialize frame count
-count = 0
+import threading
+import time
 
-# open the video clip
-vidcap = cv2.VideoCapture(clipFileName)
+class ExtractFrame(threading.Thread):
+    def __init__(self, lock, semaphore1, semaphore2, q1= []):
+        threading.Thread.__init__(self)
+        self.lock = lock
+        self.sem1 = semaphore1
+        self.sem2 = semaphore2
+        self.q1 = q1
 
-# create the output directory if it doesn't exist
-if not os.path.exists(outputDir):
-  print(f"Output directory {outputDir} didn't exist, creating")
-  os.makedirs(outputDir)
+    def run(self):
+        # globals
+        outputDir    = 'frames'
+        clipFileName = 'clip.mp4'
+        # initialize frame count
+        count = 0
 
-# read one frame
-success,image = vidcap.read()
+        # open the video clip
+        vidcap = cv2.VideoCapture(clipFileName)
 
-print(f'Reading frame {count} {success}')
-while success and count < 72:
+        # create the output directory if it doesn't exist
+        if not os.path.exists(outputDir):
+          print(f"Output directory {outputDir} didn't exist, creating")
+          os.makedirs(outputDir)
 
-  # write the current frame out as a jpeg image
-  cv2.imwrite(f"{outputDir}/frame_{count:04d}.bmp", image)   
+        # read one frame
+        success,image = vidcap.read()
 
-  success,image = vidcap.read()
-  print(f'Reading frame {count}')
-  count += 1
+        print(f'Reading frame {count} {success}')
+        while success:
+          # write the current frame out as a jpeg image
+          cv2.imwrite("{}/frame_{:04d}.jpg".fornat(outputDir, count), image)
+          success,image = vidcap.read()
+          print(f'Reading frame {count}')
+          self.sem2.acquire()#ensures queue wont be full
+          self.lock.acquire()
+          self.q1.append(count)#adds frame to queue
+          self.lock.release()
+          self.sem1.release()#signals queue population
+          count += 1
+        self.q1.append(-1)#starts end sequence
+        self.sem1.release()
+        self.sem2.acquire()
