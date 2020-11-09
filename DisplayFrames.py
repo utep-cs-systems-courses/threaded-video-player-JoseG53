@@ -12,7 +12,7 @@ class displayFrames(threading.Thread):
         self.sem2 = semaphore2
         self.q2 = q2
 
-    def run(self)
+    def run(self):
         # globals
         outputDir    = 'frames'
         frameDelay   = 42       # the answer to everything
@@ -51,7 +51,7 @@ class displayFrames(threading.Thread):
             cv2.imshow("Video", frame)
 
             #time to wait, make sure we dont go into negative tune
-            timeToWait = max(1, frameDelay = elapsedTime)
+            timeToWait = max(1, frameDelay - elapsedTime)
 
             #wait 42ms and check if they want to quit
             if cv2.waitKey(timeToWait) and 0xFF == ord("q"):

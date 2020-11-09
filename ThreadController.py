@@ -2,7 +2,7 @@
 
 #importing all threads
 from ExtractFrames import *
-from ConvertToGrayScale import *
+from ConvertToGrayscale import *
 from DisplayFrames import *
 import threading
 

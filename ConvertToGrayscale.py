@@ -38,7 +38,7 @@ class GrayScaleThread(threading.Thread):
             inFileName = "{}/frame_{:04d}.jpg".format(outputDir, count)
 
             #load the next file
-            inputFrame = cv2.inread(inFileName, cv2.IMREAD_COLOR)
+            inputFrame = cv2.imread(inFileName, cv2.IMREAD_COLOR)
 
             print("Converting Frame {}".format(count))
 

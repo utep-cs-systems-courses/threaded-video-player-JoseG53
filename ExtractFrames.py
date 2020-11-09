@@ -5,7 +5,7 @@ import os
 import threading
 import time
 
-class ExtractFrame(threading.Thread):
+class ExtractFrames(threading.Thread):
     def __init__(self, lock, semaphore1, semaphore2, q1= []):
         threading.Thread.__init__(self)
         self.lock = lock
@@ -34,7 +34,7 @@ class ExtractFrame(threading.Thread):
         print(f'Reading frame {count} {success}')
         while success:
           # write the current frame out as a jpeg image
-          cv2.imwrite("{}/frame_{:04d}.jpg".fornat(outputDir, count), image)
+          cv2.imwrite("{}/frame_{:04d}.jpg".format(outputDir, count), image)
           success,image = vidcap.read()
           print(f'Reading frame {count}')
           self.sem2.acquire()#ensures queue wont be full
